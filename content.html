@@ -1,0 +1,689 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>BitDroplet Widget</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Fira+Sans:400,600&display=swap"
+      rel="stylesheet"
+    />
+    <style type="text/css">
+      html,
+      body {
+        margin: 0 auto;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        min-width: 250px;
+        /* max-width: 651px; */
+        font-size: 14px;
+        font-family: "Fira Sans", sans-serif;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      body {
+        padding: 10px 20px 20px;
+        background: #fff;
+      }
+
+      .no-margin {
+        margin: 0;
+      }
+
+      .no-padding {
+        padding: 0;
+      }
+
+      .appearance-none {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+      }
+
+      #bd-widget-container {
+        font-size: 1.3rem;
+        color: #263550;
+        line-height: 2;
+        -webkit-perspective: 1000px;
+        perspective: 1000px;
+      }
+
+      #bd-widget-container #card {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        -webkit-transition: -webkit-transform 0.8s;
+        transition: -webkit-transform 0.8s;
+        transition: transform 0.8s;
+        transition: transform 0.8s, -webkit-transform 0.8s;
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+      }
+
+      #bd-widget-container.flip #card {
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+      }
+
+      #confirm-investment-container,
+      #predict-profit-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+      }
+
+      #confirm-investment-container {
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+      }
+
+      #confirm-investment-container p {
+        margin: 0;
+        padding: 0;
+      }
+
+      #confirm-investment-container .investmentContainer {
+        padding-left: 20px;
+      }
+
+      #confirm-investment-container .investmentContainer > div::before {
+        content: "\2022";
+        color: #cfd4de;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+      }
+
+      #confirm-investment-container
+        .investmentContainer
+        > div:last-child::before {
+        display: none;
+      }
+
+      #predict-profit-container {
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+      }
+
+      #predict-profit-container p {
+        margin: 0;
+        padding: 0;
+      }
+
+      #return-details-container {
+        line-height: 1.2;
+        margin: 10px 0;
+      }
+
+      #return-details-container #current-worth {
+        font-weight: 600;
+        font-size: 1.7rem;
+        display: inline-block;
+      }
+
+      #return-details-container #total-invested {
+        font-size: 0.9rem;
+      }
+
+      #return-details-container #percentageContainer {
+        font-size: 0.8rem;
+      }
+
+      #return-details-container #percentageContainer.positive {
+        color: #16a085;
+      }
+
+      #bd-widget-container select,
+      #bd-widget-container input {
+        background-color: #fff;
+        font-size: inherit;
+        font-family: inherit;
+        border-radius: 0;
+        outline: 0;
+        width: -webkit-fit-content;
+        width: -moz-fit-content;
+        width: fit-content;
+        white-space: nowrap;
+        padding: 0;
+        margin: 0;
+        -webkit-box-sizing: content-box;
+        box-sizing: content-box;
+      }
+
+      #bd-widget-container .underline {
+        border-bottom: 2px solid #808a9b !important;
+      }
+
+      #bd-widget-container .blue-text-color {
+        color: var(--PRIMARY-COLOR);
+      }
+
+      #bd-widget-container .no-border {
+        border: none;
+      }
+
+      #bd-widget-container .action-button {
+        cursor: pointer;
+        background-color: var(--PRIMARY-COLOR);
+        border-radius: 5px;
+        -webkit-box-shadow: 0px 2px 4px 0px #000000;
+        box-shadow: 0px 2px 4px 0px #000000;
+        color: #ffffff;
+        padding: 8px 20px;
+        margin: 5px 0 8px;
+        white-space: nowrap;
+        text-align: center;
+        font-size: 0.9rem;
+      }
+
+      #bd-widget-container .branding {
+        text-align: center;
+        color: #949eb0;
+        font-size: 0.8rem;
+      }
+
+      @media screen and (min-width: 500px) {
+        #predict-profit-container {
+          -webkit-box-orient: horizontal !important;
+          -webkit-box-direction: normal !important;
+          -ms-flex-direction: row !important;
+          flex-direction: row !important;
+          -webkit-box-align: center;
+          -ms-flex-align: center;
+          align-items: center;
+        }
+
+        #predict-profit-container #return-details-container {
+          margin: 0 5px;
+        }
+
+        #predict-profit-container > div {
+          -webkit-box-flex: 1;
+          -ms-flex: 1 1 20%;
+          flex: 1 1 20%;
+          margin: 0 5px;
+        }
+
+        #predict-profit-container > div:first-child {
+          -ms-flex-preferred-size: 33%;
+          flex-basis: 33%;
+        }
+
+        #confirm-investment-container .investmentContainer {
+          margin-top: 40px;
+          padding-left: 0 !important;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+        }
+
+        #confirm-investment-container .investmentContainer > div {
+          -webkit-box-flex: 1;
+          -ms-flex: 1 1 20%;
+          flex: 1 1 20%;
+          margin: 0 5px;
+        }
+
+        #confirm-investment-container .investmentContainer > div:first-child {
+          -ms-flex-preferred-size: 33%;
+          flex-basis: 33%;
+        }
+
+        #confirm-investment-container .investmentContainer > div::before {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="bd-widget-container">
+      <div id="card">
+        <div id="predict-profit-container">
+          <div>
+            If I had invested
+            <span class="blue-text-color underline"
+              >$<input
+                type="text"
+                name="amountInvested"
+                class="no-border outline-none border-0 leading-none align-text-bottom blue-text-color"
+                value="1"
+                oninput="adjustInputWidth('amountInvested'); predictProfit();"
+                style="padding-left: 2px; width: 10px"
+              />
+              <span
+                id="amountInvested"
+                style="position: absolute; visibility: hidden"
+                >1</span
+              >
+            </span>
+            in
+            <select
+              class="appearance-none no-border underline blue-text-color"
+              name="coin"
+              style="width: 80px"
+              id="profitCoin"
+              onchange="yearList(parseInt(this.value));InvCoinChange(parseInt(this.value));predictProfit();"
+            >
+              <option selected value="0">Bitcoin</option>
+              <option value="6">Ethereum</option>
+            </select>
+            every
+            <select
+              class="appearance-none no-border underline blue-text-color"
+              name="frequency"
+              style="width: 30px"
+              onchange="adjustInputWidth('frequency'); predictProfit();"
+            >
+              <option selected value="Day">Day</option>
+              <option value="Week">Week</option>
+              <option value="Month">Month</option>
+            </select>
+            for the past
+            <select
+              class="appearance-none no-border underline blue-text-color"
+              name="durationYears"
+              id="yearConvert"
+              onchange="predictProfit()"
+            >
+              <option value="1">1 year</option>
+              <option value="2">2 years</option>
+              <option selected value="3">3 years</option>
+              <option value="4">4 years</option>
+              <option value="5">5 years</option>
+              <option value="6">6 years</option>
+            </select>
+          </div>
+          <div id="return-details-container">
+            <div>I would have got</div>
+            <div style="white-space: nowrap; margin: 5px 0">
+              <span id="current-worth">$ -,--- </span>
+              <span id="percentageContainer" class="positive">0.00%</span>
+            </div>
+            <div id="total-invested">1,095 invested</div>
+          </div>
+          <div class="action-button" onclick="flip()" id="actionButtonFlip">
+            Set up BTC investment
+          </div>
+        </div>
+        <div id="confirm-investment-container">
+          <div style="position: relative">
+            <span
+              onclick="flip()"
+              style="
+                position: absolute;
+                left: 0px;
+                top: 2px;
+                font-size: 0.8rem;
+                cursor: pointer;
+              "
+            >
+              < Back</span
+            >
+            <div
+              style="text-align: center; font-size: 0.9rem; letter-spacing: 1px"
+            >
+              CONFIRM INVESTMENT
+            </div>
+            <div class="investmentContainer">
+              <div>
+                How much to invest in
+                <select
+                  class="appearance-none no-border underline blue-text-color"
+                  name="coinForm"
+                  style="width: 80px"
+                  id="formCoinList"
+                  onchange="InvCoinChange(parseInt(this.value))"
+                >
+                  <option value="0">Bitcoin</option>
+                  <option value="6">Ethereum</option></select
+                >?
+                <p>
+                  <span
+                    class="blue-text-color underline"
+                    style="text-align: center"
+                  >
+                    <input
+                      type="text"
+                      name="amountInvestedForm"
+                      class="no-border outline-none border-0 leading-none align-text-bottom blue-text-color"
+                      value="1"
+                      oninput="validateData();adjustInputWidth('amountInvestedForm')"
+                      onfocusout="amountInvestedFocusOut();"
+                      style="padding-left: 2px; width: 10px"
+                    />
+                    <span
+                      id="amountInvestedForm"
+                      style="position: absolute; visibility: hidden"
+                      >1</span
+                    >
+                  </span>
+                  USDT
+                </p>
+              </div>
+              <div>
+                Invest every
+                <select
+                  class="appearance-none no-border underline blue-text-color"
+                  name="frequencyForm"
+                  style="width: 30px"
+                  onchange="validateData();adjustInputWidth('frequencyForm')"
+                >
+                  <option selected value="Day">Day</option>
+                  <option value="Week">Week</option>
+                  <option value="Month">Month</option>
+                </select>
+              </div>
+              <div>
+                Start from
+                <select
+                  class="appearance-none no-border underline blue-text-color"
+                  name="startDateForm"
+                  style="width: 53px"
+                  onchange="adjustInputWidth('startDateForm')"
+                >
+                  <option selected value="Today">Today</option>
+                  <option value="Next Week">Next Week</option>
+                  <option value="Next Month">Next Month</option>
+                </select>
+              </div>
+              <div style="margin-left: -20px">
+                <div
+                  class="action-button"
+                  onclick="redirect()"
+                  id="startActionButton"
+                >
+                  Start investment in Bitcoin
+                </div>
+
+                <div class="branding">
+                  <i>with </i>
+                  <svg
+                    width="19"
+                    height="19"
+                    viewBox="0 0 19 19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style="vertical-align: top"
+                  >
+                    <g id="bitdroplet">
+                      <path
+                        id="Rectangle 17"
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M4.42459 0.000150534L14.4753 0C16.0422 0 16.6104 0.163145 17.1832 0.469497C17.7561 0.775849 18.2056 1.22541 18.512 1.79824L18.5591 1.88879C18.835 2.43364 18.9815 3.02172 18.9815 4.50614V14.4753C18.9815 16.0422 18.8183 16.6104 18.512 17.1832C18.2056 17.7561 17.7561 18.2056 17.1832 18.512L17.0927 18.5591C16.5478 18.835 15.9597 18.9815 14.4753 18.9815H4.50614C2.93926 18.9815 2.37107 18.8183 1.79824 18.512C1.22541 18.2056 0.775849 17.7561 0.469497 17.1832L0.422319 17.0927C0.151533 16.5579 0.0054675 15.9815 0.000150534 14.5569L0 4.50614C0 2.93926 0.163145 2.37107 0.469497 1.79824C0.775849 1.22541 1.22541 0.775849 1.79824 0.469497L1.88879 0.422319C2.42355 0.151533 2.99996 0.0054675 4.42459 0.000150534Z"
+                        fill="rgb(148,158,176)"
+                      />
+                      <path
+                        id="ion-waterdrop - Ionicons"
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M9.46962 4.05051C9.76255 4.38005 10.0555 4.74097 10.3484 5.13328C10.6413 5.52559 10.9818 6.02774 11.37 6.63975C11.7581 7.25175 12.0693 7.92652 12.3037 8.66406C12.538 9.40161 12.6552 10.1234 12.6552 10.8296C12.6552 11.8339 12.311 12.6852 11.6226 13.3835C10.9342 14.0818 10.1067 14.431 9.14009 14.431C8.52494 14.431 7.95741 14.2858 7.43747 13.9955C6.91752 13.7052 6.50377 13.309 6.1962 12.8068C6.07903 12.6028 5.96919 12.3753 5.86666 12.1242C5.70555 11.7005 5.625 11.269 5.625 10.8296V10.7355C5.63965 9.41729 6.10832 7.98145 7.03103 6.4279C7.32396 5.94144 7.75602 5.33729 8.32722 4.61544C8.59085 4.30159 8.75196 4.11328 8.81055 4.05051L8.83252 4.02697C8.94969 3.93282 9.05221 3.88574 9.14009 3.88574C9.22796 3.88574 9.33049 3.93282 9.44766 4.02697L9.46962 4.05051Z"
+                        fill="white"
+                      />
+                      <path
+                        id="Path"
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M9.5096 13.3957C10.1768 13.3957 10.7505 13.1488 11.2305 12.655C11.7106 12.1612 11.9506 11.5712 11.9506 10.8849C11.9506 10.5334 11.8855 10.1986 11.7554 9.88062C11.5438 10.7008 11.137 11.408 10.5348 12.0022C9.93271 12.5964 9.23295 12.9772 8.43555 13.1446C8.79357 13.312 9.15158 13.3957 9.5096 13.3957Z"
+                        fill="rgb(148,158,176)"
+                      />
+                    </g>
+                  </svg>
+                  <span> Bitdroplet</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      // Method to read query parameters
+      // e.g http://bitdroplet.com/widget/content.html?refTag=ashish&primaryColor=574B90
+
+      function yearList(coin) {
+        let list;
+        if (coin === 0) {
+          list = `<option value="1">1 year</option>
+                  <option value="2">2 years</option>
+                  <option selected value="3">3 years</option>
+                  <option value="4">4 years</option>
+                  <option value="5">5 years</option>
+      	  <option value="6">6 years</option>`;
+        } else {
+          list = `<option value="1">1 year</option>
+                  <option value="2">2 years</option>
+                  <option selected value="3">3 years</option>
+		 `;
+        }
+
+        document.getElementById("yearConvert").innerHTML = list;
+      }
+
+      function InvCoinChange(coin) {
+        document.getElementById("actionButtonFlip").innerHTML = `Set up ${
+          coin === 6 ? "ETH" : "BTC"
+        } investment`;
+
+        document.getElementById("formCoinList").value = coin;
+
+        document.getElementById("profitCoin").value = coin;
+
+        document.getElementById(
+          "startActionButton"
+        ).innerHTML = `Start investment in ${
+          coin === 6 ? "Ethereum" : "Bitcoin"
+        }`;
+
+        yearList(coin);
+        predictProfit();
+      }
+
+      const getQueryString = function (field, url) {
+        const href = url ? url : window.location.href;
+        const reg = new RegExp("[?&]" + field + "=([^&#]*)", "i");
+        const string = reg.exec(href);
+        return string ? string[1] : null;
+      };
+
+      const refTag = getQueryString("refTag") || "bitdroplet-no-ref-tag";
+      let primaryColor = `#${getQueryString("primaryColor")}`;
+      primaryColor = /^#[0-9A-F]{6}$/i.test(primaryColor)
+        ? primaryColor
+        : "#574B90";
+
+      // Create Class with Primary Class
+      const style = document.createElement("style");
+      style.type = "text/css";
+      style.innerHTML = `:root { --PRIMARY-COLOR: ${primaryColor};}`;
+      document.getElementsByTagName("head")[0].prepend(style);
+
+      const amountInvestedHiddenElem = document.getElementById(
+        "amountInvested"
+      );
+      const currentWorthElem = document.getElementById("current-worth");
+      const percentageContainer = document.getElementById(
+        "percentageContainer"
+      );
+      const totalWorthElem = document.getElementById("total-invested");
+      const amountInvestedElem = document.getElementsByName(
+        "amountInvested"
+      )[0];
+      const frequencyElem = document.getElementsByName("frequency")[0];
+      const durationYearsElem = document.getElementsByName("durationYears")[0];
+      const durationCoinElem = document.getElementsByName("coin")[0];
+
+      const amountInvestedFormElem = document.getElementsByName(
+        "amountInvestedForm"
+      )[0];
+      const frequencyFormElem = document.getElementsByName("frequencyForm")[0];
+      const startDateFormElem = document.getElementsByName("startDateForm")[0];
+      const coinFormElem = document.getElementsByName("coinForm")[0];
+
+      const investmentFrequency = {
+        Day: 0,
+        Week: 1,
+        Month: 2,
+      };
+
+      const adjustInputWidth = function (target) {
+        const targetElem = document.getElementsByName(target)[0];
+
+        amountInvestedHiddenElem.innerText = targetElem.value || 0;
+        targetElem.style.width = amountInvestedHiddenElem.offsetWidth + "px";
+      };
+
+      const setProfitData = function (returnsData) {
+        currentWorthElem.innerText =
+          "$ " + returnsData.worthNow.toLocaleString();
+
+        percentageContainer.innerText = returnsData.percentage + "%";
+        percentageContainer.className = "";
+        percentageContainer.classList.add(returnsData.return);
+
+        totalWorthElem.innerText =
+          returnsData.totalInvested.toLocaleString() + " invested";
+      };
+
+      const predictProfit = function () {
+        const data = {
+          amountInvested: amountInvestedElem.value * 1,
+          frequency: investmentFrequency[frequencyElem.value],
+          durationYears: durationYearsElem.value * 1,
+          coin: durationCoinElem.value,
+        };
+
+        fetch(
+          "https://bitdroplet.com/order/getPredictedProfitMini/?amount=" +
+            data.amountInvested +
+            "&frequency=" +
+            data.frequency +
+            "&days=" +
+            data.durationYears * 365 +
+            "&coin=" +
+            data.coin
+        )
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (response) {
+            var response = response[0];
+            if (response.status) {
+              const returnsData = response.data[0];
+              const absoluteReturn = (
+                ((returnsData.worthNow - returnsData.totalInvested) /
+                  returnsData.totalInvested) *
+                100
+              ).toFixed(2);
+
+              returnsData.percentage = absoluteReturn;
+              returnsData.return =
+                returnsData.worthNow - returnsData.totalInvested > -1
+                  ? "positive"
+                  : "negative";
+              setProfitData(returnsData);
+            }
+          })
+          .catch(function (e) {
+            console.log("fetch catch", e);
+          });
+      };
+
+      const flip = function () {
+        const element = document.getElementById("bd-widget-container");
+        element.classList.toggle("flip");
+      };
+      const amountInvestedFocusOut = function () {
+        const investmentSize = amountInvestedFormElem.value;
+        if (!investmentSize) {
+          amountInvestedFormElem.value = 1;
+          validateData();
+        }
+      };
+      const validateData = function () {
+        const investmentSize = amountInvestedFormElem.value;
+        const frequency = investmentFrequency[frequencyFormElem.value];
+        if (frequency > 0 && investmentSize && investmentSize < 5) {
+          amountInvestedFormElem.value = Math.max(5, investmentSize);
+        }
+      };
+
+      const collectData = function () {
+        const now = new Date();
+        const dates = {
+          Today: now,
+          "Next Week": new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + (7 - now.getDay()) + 2
+          ),
+          "Next Month": new Date(now.getFullYear(), now.getMonth() + 1, 2),
+        };
+
+        const data = {
+          installmentsize: amountInvestedFormElem.value,
+          type: investmentFrequency[frequencyFormElem.value],
+          startTime: dates[startDateFormElem.value].toISOString().slice(0, 10),
+          coin: coinFormElem.value,
+        };
+        return data;
+      };
+
+      const redirect = function () {
+        const data = collectData();
+        const queryParams = `installmentsize=${data.installmentsize}&type=${data.type}&startTime=${data.startTime}&coin=${data.coin}&target=0&source=${refTag}`;
+        fetch("https://bitdroplet.com/order/initGoalDirect/?" + queryParams)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (response) {
+            // [{"status":1,"msg":"Successfully created a new SPP","id":20}]
+            var response = response[0];
+            if (response.status) {
+              // opening a new window from iframe on IOS/mac platform is causing some issues
+              //  throws user confirmation dialogue box.
+              //  so lets detect if window is opened in new tab.. if NOT lets open url in current tab
+              var bitdroplet_window = window.open(
+                `https://bitdroplet.com/app?${queryParams}#/onboard`,
+                "_blank"
+              );
+              try {
+                bitdroplet_window.focus();
+              } catch (e) {
+                window.open(
+                  `https://bitdroplet.com/app?${queryParams}#/onboard`,
+                  "_parent"
+                );
+              }
+            }
+          })
+          .catch(function (e) {});
+      };
+      predictProfit();
+    </script>
+  </body>
+</html>
